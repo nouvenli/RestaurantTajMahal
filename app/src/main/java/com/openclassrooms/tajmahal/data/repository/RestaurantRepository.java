@@ -51,8 +51,6 @@ public class RestaurantRepository {
     public LiveData<Restaurant> getRestaurant() {
         return new MutableLiveData<>(restaurantApi.getRestaurant());
     }
-
-
     /**
      * Retrieves the list of user reviews.
      *
@@ -62,5 +60,12 @@ public class RestaurantRepository {
      */
     public LiveData<List<Review>> getReviews() {
         return new MutableLiveData<>(restaurantApi.getReviews());
+    }
+
+    /* add a new review to the restaurant
+    @param review - the review to add
+     */
+    public void addReview(Review review) {
+        restaurantApi.addReview(review);
     }
 }

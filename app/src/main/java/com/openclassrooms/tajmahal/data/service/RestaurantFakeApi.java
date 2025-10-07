@@ -71,4 +71,9 @@ public class RestaurantFakeApi implements RestaurantApi {
         return reviews;
     }
 
+    @Override
+    public void addReview(Review review) {
+        reviews.add(0, review);  // Ajoute en tête de liste (position 0)
+    }
+
 }

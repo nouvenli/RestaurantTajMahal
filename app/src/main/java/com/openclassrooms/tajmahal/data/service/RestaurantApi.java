@@ -45,9 +45,14 @@ public interface RestaurantApi {
      * <p>
      * This method will usually be connected to a network call or database query in its
      * implementing class, fetching the list of the existing reviews.
-     * </p>
      *
-     * @return The {@link Restaurant} object containing all the details of the restaurant.
      */
     List<Review> getReviews();
+
+    /**
+     * this method fetching the new reviews
+     *
+      * @param review
+     */
+    void addReview(Review review);
 }
