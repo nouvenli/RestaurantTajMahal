@@ -42,7 +42,7 @@ public class DetailsFragment extends Fragment {
      * It's used to perform one-time initialization.
      *
      * @param savedInstanceState A bundle containing previously saved instance state.
-     * If the fragment is being re-created from a previous saved state, this is the state.
+     *                           If the fragment is being re-created from a previous saved state, this is the state.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,9 +53,9 @@ public class DetailsFragment extends Fragment {
      * This method is called immediately after `onCreateView()`.
      * Use this method to perform final initialization once the fragment views have been inflated.
      *
-     * @param view The View returned by `onCreateView()`.
+     * @param view               The View returned by `onCreateView()`.
      * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
+     *                           from a previous saved state as given here.
      */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -63,16 +63,42 @@ public class DetailsFragment extends Fragment {
         setupUI(); // Sets up user interface components.
         setupViewModel(); // Prepares the ViewModel for the fragment.
         detailsViewModel.getTajMahalRestaurant().observe(requireActivity(), this::updateUIWithRestaurant); // Observes changes in the restaurant data and updates the UI accordingly.
+        updateUIWithReviews();
+    }
+
+    /**
+     * Updates the UI components with review statistics
+     * Displays the average rating, rating bar and total review count
+     */
+
+    private void updateUIWithReviews() {
+        float avgRating = detailsViewModel.getAverageRating();
+        int reviewCount = detailsViewModel.getReviewCount();
+
+        binding.tvAverageRating.setText(String.format("%.1f", avgRating));
+        binding.ratingBar.setRating(avgRating);
+        binding.tvReviewCount.setText(String.format("(%d)", reviewCount));
+
+        //barre de progression
+        int[] distribution = detailsViewModel.getRatingDistribution();
+
+        if (reviewCount > 0) {
+            binding.progressBar5.setProgress(distribution[4] * 100 / reviewCount);
+            binding.progressBar4.setProgress(distribution[3] * 100 / reviewCount);
+            binding.progressBar3.setProgress(distribution[2] * 100 / reviewCount);
+            binding.progressBar2.setProgress(distribution[1] * 100 / reviewCount);
+            binding.progressBar1.setProgress(distribution[0] * 100 / reviewCount);
+        }
     }
 
     /**
      * Creates and returns the view hierarchy associated with the fragment.
      *
-     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment.
-     * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
-     * The fragment should not add the view itself but return it.
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
+     *                           The fragment should not add the view itself but return it.
      * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
+     *                           from a previous saved state as given here.
      * @return Returns the View for the fragment's UI, or null.
      */
     @Override
