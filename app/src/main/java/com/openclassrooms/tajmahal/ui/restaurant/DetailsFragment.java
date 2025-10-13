@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.openclassrooms.tajmahal.R;
 import com.openclassrooms.tajmahal.databinding.FragmentDetailsBinding;
 import com.openclassrooms.tajmahal.domain.model.Restaurant;
+import com.openclassrooms.tajmahal.ui.reviews.ReviewFragment;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -64,6 +65,7 @@ public class DetailsFragment extends Fragment {
         setupViewModel(); // Prepares the ViewModel for the fragment.
         detailsViewModel.getTajMahalRestaurant().observe(requireActivity(), this::updateUIWithRestaurant); // Observes changes in the restaurant data and updates the UI accordingly.
         updateUIWithReviews();
+        setupNavigation();
     }
 
     /**
@@ -201,4 +203,16 @@ public class DetailsFragment extends Fragment {
         return new DetailsFragment();
     }
 
+    /**
+     * gestion de la navigation vers le fragment Review
+     */
+    private void setupNavigation() {
+        binding.tvRateCTA.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, ReviewFragment.newInstance())
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+    }
 }
