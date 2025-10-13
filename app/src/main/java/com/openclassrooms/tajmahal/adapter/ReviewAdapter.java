@@ -1,5 +1,6 @@
 package com.openclassrooms.tajmahal.adapter;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.openclassrooms.tajmahal.R;
 import com.openclassrooms.tajmahal.domain.model.Review;
 
@@ -23,6 +25,7 @@ public class ReviewAdapter extends ListAdapter<Review, ReviewAdapter.ViewHolder>
     public ReviewAdapter() {
         super(new ItemCallback());
     }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -60,8 +63,10 @@ public class ReviewAdapter extends ListAdapter<Review, ReviewAdapter.ViewHolder>
             tvReviewerName.setText(review.getUsername());
             tvReviewerComment.setText(review.getComment());
             rbReviewRating.setRating(review.getRate());
-            //ivReviewerAvatar.setImageDrawable(review.getPicture());
-            // ivReviewerAvatar   je ne sais pas quoi prendre je n'ai pas setPicture dans la liste
+            Glide.with(itemView.getContext())
+                    .load(review.getPicture())
+                    .circleCrop()
+                    .into(ivReviewerAvatar);
         }
     }
 

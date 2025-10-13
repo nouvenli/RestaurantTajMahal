@@ -1,5 +1,6 @@
 package com.openclassrooms.tajmahal.ui.reviews;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,8 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.openclassrooms.tajmahal.R;
 import com.openclassrooms.tajmahal.adapter.ReviewAdapter;
 import com.openclassrooms.tajmahal.databinding.FragmentReviewBinding;
@@ -50,11 +53,13 @@ public class ReviewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setupUI(); // mise en place de l'interface
         setupViewModel();  //connexion entre fragment et données
         setupRecyclerView(); // crée l'adapter
         observeReviews();
         setupAddReviewButton();
         setupBackButton();
+        setupRestaurantInfo();
     }
 
     private void setupViewModel() {
@@ -123,12 +128,39 @@ public class ReviewFragment extends Fragment {
     }
 
     private void setupBackButton() {
-        binding.goBack.setOnClickListener(v -> {
+        binding.ivGoBack.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().popBackStack();
         });
     }
 
     public static ReviewFragment newInstance() {
         return new ReviewFragment();
+    }
+
+    private void setupRestaurantInfo() {
+        binding.tvRestaurantName.setText("TajMahal");
+        binding.tvUserName.setText("Manon Garcia");
+
+        Glide.with(requireContext())
+                .load("https://xsgames.co/randomusers/assets/avatars/female/20.jpg")
+                .circleCrop()
+                .into(binding.ivAvatarUser);
+    }
+
+    private void setupUI() {
+        Window window = requireActivity().getWindow();
+
+        // Réactive la barre de statut normale
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+
+        // Fond blanc pour la barre
+        window.setStatusBarColor(Color.WHITE);
+
+        // Texte noir sur la barre (icônes sombres)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            window.getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            );
+        }
     }
 }
