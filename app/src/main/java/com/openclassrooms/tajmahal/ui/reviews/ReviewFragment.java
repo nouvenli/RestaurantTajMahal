@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import com.bumptech.glide.Glide;
 import com.openclassrooms.tajmahal.R;
 import com.openclassrooms.tajmahal.adapter.ReviewAdapter;
 import com.openclassrooms.tajmahal.databinding.FragmentReviewBinding;
+
+import java.util.ArrayList;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -111,8 +114,11 @@ public class ReviewFragment extends Fragment {
     private void observeViewModelData() {
         // observe liste avis
 
-        reviewViewModel.getReviews().observe(requireActivity(), reviews -> {
-            adapter.submitList(reviews);
+        reviewViewModel.getReviews().observe(getViewLifecycleOwner(), reviews -> {
+            adapter.submitList(null); // reset pour forcer mise à jour
+            adapter.submitList(new ArrayList<>(reviews), () -> {
+                binding.rvReviews.smoothScrollToPosition(0);
+            });
         });
 
         // observe èvènement de validation et erreur comment et rating

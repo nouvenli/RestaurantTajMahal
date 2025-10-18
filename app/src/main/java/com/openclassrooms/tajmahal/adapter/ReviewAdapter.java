@@ -17,9 +17,13 @@ import com.bumptech.glide.Glide;
 import com.openclassrooms.tajmahal.R;
 import com.openclassrooms.tajmahal.domain.model.Review;
 
+/** Adapter class for RecyclerView that manage list of reviews
+ * Bind data of reviews using ViewHolders
+ */
 public class ReviewAdapter extends ListAdapter<Review, ReviewAdapter.ViewHolder> {
 
     /**
+     * Constructor with reviews list
      * constructeur pour les avis précédents
      */
     public ReviewAdapter() {
@@ -70,12 +74,16 @@ public class ReviewAdapter extends ListAdapter<Review, ReviewAdapter.ViewHolder>
         }
     }
 
+    /**
+     * compare les avis.
+     * AreItemsTheSame compare par référence mémoire - 2 avis 2 objets
+     * areContentsTheSame compare tous les champs de l'objet
+     */
     private static class ItemCallback extends DiffUtil.ItemCallback<Review> {
-        // Compare les Reviews
-        // Compare les Review
+
         @Override
         public boolean areItemsTheSame(@NonNull Review oldItem, @NonNull Review newItem) {
-            return oldItem.equals(newItem);
+            return oldItem == newItem;
         }
 
         @Override

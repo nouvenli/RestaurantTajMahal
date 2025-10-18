@@ -1,5 +1,7 @@
 package com.openclassrooms.tajmahal.data.repository;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -7,6 +9,7 @@ import com.openclassrooms.tajmahal.data.service.RestaurantApi;
 import com.openclassrooms.tajmahal.domain.model.Restaurant;
 import com.openclassrooms.tajmahal.domain.model.Review;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -28,7 +31,8 @@ public class RestaurantRepository {
 
     // The API interface instance that will be used for network requests related to restaurant data.
     private final RestaurantApi restaurantApi;
-
+    //creation mutableLiveData pour les reviews
+    private final MutableLiveData<List<Review>> reviewsLiveData = new MutableLiveData<>();
     /**
      * Constructs a new instance of {@link RestaurantRepository} with the given {@link RestaurantApi}.
      *
@@ -37,6 +41,8 @@ public class RestaurantRepository {
     @Inject
     public RestaurantRepository(RestaurantApi restaurantApi) {
         this.restaurantApi = restaurantApi;
+        // initialize the reviewsLiveData when the repository is created
+        reviewsLiveData.setValue(restaurantApi.getReviews());
     }
 
     /**
@@ -54,18 +60,19 @@ public class RestaurantRepository {
     /**
      * Retrieves the list of user reviews.
      *
-     * This method calls {@link RestaurantApi} to fetch all reviews.
-     *
      * @return LiveData containing the list of reviews
      */
     public LiveData<List<Review>> getReviews() {
-        return new MutableLiveData<>(restaurantApi.getReviews());
+        return reviewsLiveData;
     }
 
-    /* add a new review to the restaurant
+    /* update reviews and notifies observers
+     *
     @param review - the review to add
      */
     public void addReview(Review review) {
         restaurantApi.addReview(review);
+        // ✅ Crée une NOUVELLE liste pour que LiveData détecte le changement
+        reviewsLiveData.setValue(new ArrayList<>(restaurantApi.getReviews()));
     }
 }

@@ -47,7 +47,10 @@ public class ReviewViewModel extends ViewModel {
     public ReviewViewModel(RestaurantRepository restaurantRepository) {
         this.restaurantRepository = restaurantRepository;
     }
-
+    /**
+     * Retrieves customer review details
+     * @return LiveData object containing review details.
+     */
     public LiveData<List<Review>> getReviews() {
         return restaurantRepository.getReviews();
     }
@@ -86,7 +89,7 @@ public class ReviewViewModel extends ViewModel {
     }
 
     /**
-     * Ajoute un nouvel avis à la liste (Appel au Repository).
+     * Adds a new review to the list with using the repository
      */
     private void addReview(String username, String picture, String comment, int rate) {
         Review newReview = new Review(username, picture, comment, rate);
