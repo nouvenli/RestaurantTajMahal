@@ -67,6 +67,11 @@ public class Restaurant {
         return Objects.hash(name, type, hours, address, website, phoneNumber, dineIn, takeAway);
     }
 
+    /**
+     * Getters and setters form member variables.
+     * name, type, hours, address, website, phoneNumber, dineIn, takeAway
+     * @return
+     */
     public String getName() {
         return name;
     }

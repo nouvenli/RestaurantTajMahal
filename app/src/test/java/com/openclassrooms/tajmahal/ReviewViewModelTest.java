@@ -23,6 +23,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.never;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Review view model test class
@@ -47,18 +49,18 @@ public class ReviewViewModelTest {
 
     /**
      * test 1 - ajout d'un avis valide
-     * le fragment gère les avis sans commentaires ou sans rate
+     * le fragment gère les avis sans commentaire ou sans rate
      */
     @Test
-    public void testAddReview_ValidReview() {
-        // donnée à prendre en compte
-        String userName = "John Doe";
-        String userComment = "Great restaurant!";
-        String pictureUrl = "https://example.com/image.jpg";
+    public void processNewReview_withValidData_shouldCallRepository() {
+        // Arrange
+        String comment = "Great restaurant!";
         int rating = 4;
-        // appel de la méthode à tester
-        viewModel.addReview(userName, userComment, pictureUrl, rating);
-        // vérification du résultat
+
+        // Act
+        viewModel.processNewReview(comment, rating);
+
+        // Assert
         verify(mockRepository).addReview(any(Review.class));
     }
 
@@ -67,20 +69,21 @@ public class ReviewViewModelTest {
      * test si le repository est appelé
      */
     @Test
-    public void addReview_CallsRepository() {
-        // donnée à prendre en compte
-        String userName = "John Doe";
-        String userComment = "Great restaurant!";
-        String pictureUrl = "https://example.com/image.jpg";
+    public void processNewReview_shouldCallRepositoryWithCorrectData() {
+        // Arrange
+        String comment = "Très bon service";
         int rating = 4;
-        // appel de la méthode à tester
-        viewModel.addReview(userName, userComment, pictureUrl, rating);
-        // vérification du résultat
+
+        // Act
+        viewModel.processNewReview(comment, rating);
+
+        // Assert
         verify(mockRepository).addReview(argThat(review ->
-                review.getUsername().equals(userName) &&
-                        review.getPicture().equals(userComment) &&
-                        review.getComment().equals(pictureUrl) &&
-                        review.getRate() == rating));
+                review.getUsername().equals("Manon Garcia") &&
+                        review.getPicture().equals("https://xsgames.co/randomusers/assets/avatars/female/20.jpg") &&
+                        review.getComment().equals(comment) &&
+                        review.getRate() == rating
+        ));
     }
 
     /**
@@ -89,6 +92,7 @@ public class ReviewViewModelTest {
      * retourne le bon nombre d'éléments
      * retourne dans le bon ordre
      */
+    @Test
     public void getReviews_ReturnsReviews() {
         // donnée à prendre en compte
         List<Review> expectedReviews = Arrays.asList(new Review("John Doe", "https://example.com/image.jpg", "Great restaurant!", 4), new Review("Jane Smith", "https://example.com/image2.jpg", "Excellent service!", 5));
@@ -105,37 +109,57 @@ public class ReviewViewModelTest {
 
     }
 
-    /**
-     * test 4 - test rating limite inférieure
-     */
-    @Test
-    public void testAddReview_MinimalRating() {
-        // donnée à prendre en compte
-        String userName = "John Doe";
-        String userComment = "Great restaurant!";
-        String pictureUrl = "https://example.com/image.jpg";
-        int rating = 1;
-        // appel de la méthode à tester
-        viewModel.addReview(userName, userComment, pictureUrl, rating);
-        // vérification du résultat
-        verify(mockRepository).addReview(any(Review.class));
-    }
 
     /**
-     * test 5 - test rating limite supérieure
+     * test 4 - test si le commentaire est vide
      */
     @Test
-    public void testAddReview_MaximalRating() {
-        // donnée à prendre en compte
-        String userName = "John Doe";
-        String userComment = "Great restaurant!";
-        String pictureUrl = "https://example.com/image.jpg";
+    public void processNewReview_withEmptyComment_shouldSetCommentError() {
+        // Arrange
+        String comment = "";
         int rating = 5;
-        // appel de la méthode à tester
-        viewModel.addReview(userName, userComment, pictureUrl, rating);
-        // vérification du résultat
-        verify(mockRepository).addReview(any(Review.class));
+
+        // Act
+        viewModel.processNewReview(comment, rating);
+
+        // Assert
+        assertNotNull(viewModel.getCommentError().getValue());
+        assertEquals("Désolés, le commentaire ne peut pas être vide", viewModel.getCommentError().getValue());
+        verify(mockRepository, never()).addReview(any(Review.class));
     }
 
-}
+    /**
+     * test 5 - test si la note est nulle
+     */
+    @Test
+    public void processNewReview_withZeroRating_shouldSetRatingError() {
+        // Arrange
+        String comment = "Great restaurant!";
+        int rating = 0;
 
+        // Act
+        viewModel.processNewReview(comment, rating);
+
+        // Assert
+        assertNotNull(viewModel.getRatingError().getValue());
+        assertEquals("Merci de donner une note", viewModel.getRatingError().getValue());
+        verify(mockRepository, never()).addReview(any(Review.class));
+    }
+
+    /**
+     * test 6 - test si le review est ajouté
+     */
+    @Test
+    public void processNewReview_withValidData_shouldAddReviewAndEmitSuccess() {
+        // Arrange
+        String comment = "Excellent restaurant!";
+        int rating = 5;
+
+        // Act
+        viewModel.processNewReview(comment, rating);
+
+        // Assert
+        verify(mockRepository).addReview(any(Review.class));
+        assertTrue(viewModel.getReviewAddSuccessEvent().getValue());
+    }
+}

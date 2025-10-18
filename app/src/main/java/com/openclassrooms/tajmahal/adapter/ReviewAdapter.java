@@ -20,7 +20,7 @@ import com.openclassrooms.tajmahal.domain.model.Review;
 public class ReviewAdapter extends ListAdapter<Review, ReviewAdapter.ViewHolder> {
 
     /**
-     * constructeur pour les avis précédent
+     * constructeur pour les avis précédents
      */
     public ReviewAdapter() {
         super(new ItemCallback());
