@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,8 +65,13 @@ public class DetailsFragment extends Fragment {
         setupUI(); // Sets up user interface components.
         setupViewModel(); // Prepares the ViewModel for the fragment.
         detailsViewModel.getTajMahalRestaurant().observe(requireActivity(), this::updateUIWithRestaurant); // Observes changes in the restaurant data and updates the UI accordingly.
-        updateUIWithReviews();
+        //updateUIWithReviews();
+        detailsViewModel.getReviews().observe(getViewLifecycleOwner(), reviews -> {
+            updateUIWithReviews();
+        });
         setupNavigation();
+
+
     }
 
     /**
@@ -85,6 +91,7 @@ public class DetailsFragment extends Fragment {
         int[] distribution = detailsViewModel.getRatingDistribution();
 
         if (reviewCount > 0) {
+
             binding.progressBar5.setProgress(distribution[4] * 100 / reviewCount);
             binding.progressBar4.setProgress(distribution[3] * 100 / reviewCount);
             binding.progressBar3.setProgress(distribution[2] * 100 / reviewCount);
@@ -115,9 +122,7 @@ public class DetailsFragment extends Fragment {
      */
     private void setupUI() {
         Window window = requireActivity().getWindow();
-        window.getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        );
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         window.setStatusBarColor(Color.TRANSPARENT);
     }
 
@@ -208,10 +213,7 @@ public class DetailsFragment extends Fragment {
      */
     private void setupNavigation() {
         binding.tvRateCTA.setOnClickListener(v -> {
-            requireActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, ReviewFragment.newInstance())
-                    .addToBackStack(null)
-                    .commit();
+            requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, ReviewFragment.newInstance()).addToBackStack(null).commit();
         });
 
     }

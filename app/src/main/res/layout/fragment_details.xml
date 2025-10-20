@@ -107,7 +107,6 @@
             android:isIndicator="true"
             android:numStars="5"
             android:progressTint="#FFB800"
-            android:rating="4.0"
             android:stepSize="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvAverageRating" />
