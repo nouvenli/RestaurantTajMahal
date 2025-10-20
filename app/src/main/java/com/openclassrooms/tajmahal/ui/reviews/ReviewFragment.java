@@ -115,7 +115,7 @@ public class ReviewFragment extends Fragment {
         // observe liste avis
 
         reviewViewModel.getReviews().observe(getViewLifecycleOwner(), reviews -> {
-            adapter.submitList(null); // reset pour forcer mise à jour
+            adapter.submitList(null);
             adapter.submitList(new ArrayList<>(reviews), () -> {
                 binding.rvReviews.smoothScrollToPosition(0);
             });
